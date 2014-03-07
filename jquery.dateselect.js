@@ -1,5 +1,5 @@
 /*
- *  $ Dateselect 1.0.2
+ *  $ Dateselect 1.0.3
  *
  *  Copyright (c) 2011 Fractalia - Applications Lab (https://bitbucket.org/fractalia/jquery-dateselect)
  *  Dual licensed under the MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -78,25 +78,22 @@
 
                 var hasValidValue = (e.value === '' || e.value === '0000-00-00') ? true : false;
 
-                $.each(opts.order, function(j, v) {
-                    var attrs = {
-                        id: e.id + '-' + v,
-                        class: 'dateselect-selector dateselect-' + v + ' ' + opts.cssClassSelector,
-                        css: {
-                            width: 'auto !important',
-                            minWidth: '0 !important'
-                        }
-                    };
+                var attrs = {
+                    'style': "width: auto !important; min-width: 0 !important",
+                    'tabindex': $(e).attr('tabindex')
+                };
 
-                    if (e.hasOwnProperty('tabindex')) {
-                        attrs.tabindex = e.tabindex;
-                    }
+                $.each(opts.order, function(j, selector) {
+                    $.extend(attrs, {
+                        'id': e.id + '-' + selector,
+                        'class': 'dateselect-selector dateselect-' + selector + ' ' + opts.cssClassSelector
+                    });
 
                     if (hasValidValue) {
                         attrs.html = '<option class="dateselect-empty" value="">' + opts.selectOne[j] + '</option>';
                     }
 
-                    $selectors[v] = $('<select>', attrs).appendTo($container).after('&nbsp;');
+                    $selectors[selector] = $('<select>', attrs).appendTo($container).after('&nbsp;');
                 });
 
                 var currentYear = (time.getYear() > 1900) ? 0 : 1900;
@@ -113,7 +110,7 @@
                     $selectors['year'].append('<option ' + ((j == y) ? 'selected="selected"' : '') + ' value="' + j + '">' + j + '</option>');
                 }
 
-                for(j in opts.monthNames){
+                for (j in opts.monthNames) {
                     $selectors['month'].append('<option ' + ((j + 1 == m) ? 'selected="selected"' : '') + ' value="' + (parseInt(j) + 1) + '">' + opts.monthNames[j] + '</option>');
                 }
 
@@ -132,32 +129,32 @@
                 }
 
                 var
-                        m = $container.find('select.dateselect-month').val(),
-                        y = $container.find('select.dateselect-year').val(),
-                        d = $container.find('select.dateselect-day').val()
-                        ;
+                        month = $container.find('select.dateselect-month').val(),
+                        year = $container.find('select.dateselect-year').val(),
+                        day = $container.find('select.dateselect-day').val();
 
                 if (!$selector.hasClass('dateselect-day')) {
-                    var mm = Math.max(1, m);
-                    
-                    var max = ((mm === 2) && (isLeap(y))) ? monthDays[mm - 1] + 1 : monthDays[mm - 1];
+                    var mm = Math.max(1, month);
+
+                    var max = ((mm === 2) && (isLeap(year))) ? monthDays[mm - 1] + 1 : monthDays[mm - 1];
 
                     $container.find('select.dateselect-day option.dateselect-numeric').remove();
 
-                    d = Math.min(d, max);
+                    day = Math.min(day, max);
 
                     for (var i = 1; i <= max; i++) {
-                        $container.find('select.dateselect-day').append('<option class="dateselect-numeric" ' + ((d == i) ? 'selected="selected"' : '') + ' value="' + i + '">' + pad10(i) + '</option>');
+                        $container.find('select.dateselect-day').append('<option class="dateselect-numeric" ' + ((day == i) ? 'selected="selected"' : '') + ' value="' + i + '">' + pad10(i) + '</option>');
                     }
                 }
 
-                if ((y !== '') && (m !== '') && (d !== '')) {
-                    $container.find('.dateselect-input').val(pad10(y) + '-' + pad10(m) + '-' + pad10(d));
-                    console.log(pad10(y) + '-' + pad10(m) + '-' + pad10(d));
+                if ((year !== '') && (month !== '') && (day !== '')) {
+                    $container.find('.dateselect-input').val(pad10(year) + '-' + pad10(month) + '-' + pad10(day));
+                    opts.callback(new Date(year, month, day));
                 } else {
                     $container.find('.dateselect-input').val('');
+                    opts.callback(false);
                 }
-                
+
                 $container.find('.dateselect-input').bind('focus');
             });
         });
@@ -170,6 +167,7 @@
         minYear: -100,
         monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         order: ['day', 'month', 'year'],
-        selectOne: ['Day', 'Month', 'Year']
+        selectOne: ['Day', 'Month', 'Year'],
+        callback: function(value) {}
     };
 })(jQuery);
