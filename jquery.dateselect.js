@@ -121,8 +121,10 @@
                 $(e).hide().before($container);
             }
 
-            $('select.dateselect-selector').on('change', function(evt) {
+            $('select.dateselect-selector').on('change', function() {
                 var $selector = $(this);
+
+                var $input = $selector.parent().next();
 
                 if ($selector.val() !== '') {
                     $selector.find('option.dateselect-empty').remove();
@@ -148,14 +150,13 @@
                 }
 
                 if ((year !== '') && (month !== '') && (day !== '')) {
-                    $container.find('.dateselect-input').val(pad10(year) + '-' + pad10(month) + '-' + pad10(day));
-                    opts.callback(new Date(year, month, day));
+                    $input.val(pad10(year) + '-' + pad10(month) + '-' + pad10(day));
+                    opts.callback.apply($input.get(0), [new Date(year, month, day)]);
                 } else {
-                    $container.find('.dateselect-input').val('');
-                    opts.callback(false);
+                    $input.val('');
                 }
 
-                $container.find('.dateselect-input').bind('focus');
+                $input.bind('focus');
             });
         });
     };
