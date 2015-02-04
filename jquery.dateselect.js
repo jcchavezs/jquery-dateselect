@@ -1,14 +1,10 @@
 /*
- *  $ Dateselect 1.0.4
+ *  $ Dateselect 1.0.5
  *
- *  Copyright (c) 2011 Fractalia - Applications Lab (https://bitbucket.org/fractalia/jquery-dateselect)
- *  Dual licensed under the MIT License (http://www.opensource.org/licenses/mit-license.php)
- *  and GPL ( http://www.gnu.org/copyleft/gpl.html )
- *
- *  http://fractalia.pe/plugins/jquery/dateselect
+ *  https://github.com/jcchavezs/jquery-dateselect
  *
  *  Depends:
- *    jquery.js
+ *    jQuery
  **/
 
 (function($) {
@@ -79,7 +75,9 @@
                         y = parseInt(val[0]),
                         m = parseInt(val[1]),
                         d = parseInt(val[2])
-                        ;
+                ;
+
+                e.value = matches[0];
             }
 
             $container = $('<div />', {
